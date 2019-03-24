@@ -1,0 +1,36 @@
+void setup() {
+  // Seleciona os pinos e identifica entrada/saída
+  pinMode (2, OUTPUT);
+  pinMode (3, OUTPUT);
+  pinMode (4, OUTPUT);
+  pinMode (5, INPUT);
+
+}
+
+void loop() {
+  
+  if (digitalRead(5) == HIGH)  // Utilizado quando a chave está aberta (HIGH)
+  {
+    //Controle do led verde
+    digitalWrite(2,HIGH);
+    delay(2000); // Tempo que o LED fica aceso
+    digitalWrite(2,LOW);
+     
+    //Controle do led amarelo
+    digitalWrite(3,HIGH);
+    delay(1000);
+    digitalWrite(3,LOW);
+   
+    //Controle do led vermelho
+    digitalWrite(4,HIGH);
+    delay(3000);
+    digitalWrite(4,LOW);
+  }
+  else     // Utilizado quando a chave está fechada (LOW)
+  {
+    digitalWrite(3,HIGH);
+    delay(500);   // Tempo em que o LED fica aceso
+    digitalWrite(3,LOW);
+    delay(500);   // Tempo em que o LED fica apagado
+  }
+}

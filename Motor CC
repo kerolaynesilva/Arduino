@@ -1,0 +1,42 @@
+float tensao;
+float nova_tensao;
+float v;
+float pwm;
+int val;
+
+void setup() {
+
+pinMode (6, OUTPUT); // LED D1, verde
+
+pinMode (13, INPUT_PULLUP);
+
+analogReadResolution(8); //0 a 255
+
+Serial.begin(9600);
+}
+
+void loop() {
+
+tensao = analogRead(A0);
+val = digitalRead(13);
+nova_tensao = map(tensao, 0, 255, 0, 33);
+v = nova_tensao / 10;
+pwm = (100 * v ) / 3.3;
+
+Serial.print("Tensão em A0: ");
+Serial.print(v,1);
+Serial.print(" V ");
+Serial.print("Sinal PWM: ");
+Serial.print(pwm);
+Serial.println(" %");
+delay(300);
+
+if(val == 0)
+{
+analogWrite (6, tensao);
+}
+else{
+analogWrite (6, 0);
+
+}
+}

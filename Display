@@ -1,0 +1,65 @@
+// Matriz de bits para representar os números de 0 a 9:
+int numero[][7] = { // 10 linhas, 7 colunas
+ { 1,1,1,1,1,1,0 }, //0
+ { 0,1,1,0,0,0,0 }, //1
+ { 1,1,0,1,1,0,1 }, //2
+ { 1,1,1,1,0,0,1 }, //3
+ { 0,1,1,0,0,1,1 }, //4
+ { 1,0,1,1,0,1,1 }, //5
+ { 0,0,1,1,1,1,1 }, //6
+ { 1,1,1,0,0,0,0 }, //7
+ { 1,1,1,1,1,1,1 }, //8
+ { 1,1,1,0,0,1,1 }, //9
+};
+
+// Configurar os pinos digitais associados a cada segmento:
+const int segmentos[7] = { 2,3,4,5,6,7,8 };
+// 2 = segmento a
+// 3 = segmento b
+// 4 = segmento c
+// 5 = segmento d
+// 6 = segmento e
+// 7 = segmento f
+// 8 = segmento g
+
+long Millis_anterior = 0;        // Variável de controle do tempo
+long intervalo_display = 300;     // Tempo em ms do intervalo a ser executado
+int n = 0;                    //Linha da matriz de bits
+
+void setup() {
+ // Configurando os pinos de cada segmento para saída:
+ for (int i = 0; i <= 6; i++) {
+   pinMode(segmentos[i], OUTPUT);
+ }
+}
+void loop() 
+{
+
+  unsigned long Millis_atual = millis();    //Tempo atual em ms
+  if (n>9)  //Não deixa o programa utilizar uma linha da matriz de bits que não existe
+  {
+    n=0;
+  }
+  //Lógica de verificação do tempo
+  if (Millis_atual - Millis_anterior > intervalo_display) 
+  { 
+      Millis_anterior = Millis_atual;    // Salva o tempo atual
+
+      if( n <= 9)
+      {
+        pinos(n);  //Envia o número da linha para a função a ser utilizada
+        n++;       //Incrementa para utilizar a próxima linha no próximo tempo
+      }
+  }    
+}
+
+
+void pinos(int digito)
+{
+  // Para cada um dos 7 segmentos liga ou desliga a saida
+  for (int i = 0; i <=6 ; i++)
+  {
+    digitalWrite(segmentos[i], numero[digito][i] );
+  }
+
+}

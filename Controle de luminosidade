@@ -1,0 +1,38 @@
+int chave;
+float pot;
+float ldr;
+int saida = 0;
+void setup() {
+pinMode(8, INPUT_PULLUP); // Chave
+pinMode(A0, INPUT); // LDR
+pinMode(A1, INPUT); // Potenciômetro
+pinMode(2, OUTPUT); //Lâmpada
+analogReadResolution(8);
+analogWrite(2, saida);
+Serial.begin(9600);
+}
+void loop() {
+chave = digitalRead(8);
+if (chave == 0)
+{
+pot = analogRead(A1);
+ldr = analogRead(A0);
+if(ldr &gt; pot &amp;&amp; saida &lt;= 255 &amp;&amp; saida &gt; 0)
+{
+saida--;
+}
+if (ldr &lt; pot &amp;&amp; saida &lt; 255 &amp;&amp; saida &gt;= 0)
+{
+saida++;
+}
+analogWrite(2, saida);
+}
+else
+{
+digitalWrite(2, LOW);
+}
+Serial.print(&quot;pot: &quot;); Serial.print(pot);
+Serial.print(&quot; ldr: &quot;); Serial.print(ldr);
+Serial.print(&quot; saída: &quot;); Serial.println(saida);
+delay(500);
+}

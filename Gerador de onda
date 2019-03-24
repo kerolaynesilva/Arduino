@@ -1,0 +1,86 @@
+#define DAC_MIN 0
+#define DAC_MAX 4095 
+
+//Tensão minima e máxima suportadas pela porta DAC: 520mV - 2,80V ( Documentação Arduino - https://forum.arduino.cc/index.php?topic=154965.0 )
+
+int Q, T, S;
+float pot, periodo, _periodo, rad, pontos;
+float seno[360];
+float pi = 3.14159265359;
+
+void setup() {
+  Serial.begin(115200);
+  analogWriteResolution(12);
+
+  pinMode(DAC1, OUTPUT);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(5, INPUT_PULLUP);
+  
+  rad = 2 * pi;
+  pontos = rad / 360;
+
+  for (int i = 0; i <= 360; i++)
+  {
+    seno[i] = (sin(i * pontos) * (DAC_MAX - DAC_MIN)/2) + (DAC_MAX + DAC_MIN)/2;
+
+    //Valores minimos e maximos de tensão = 520mV - 2.8V
+    
+  }
+
+}
+
+void loop() {
+  Q = digitalRead(5); //Onda Quadrada
+  T = digitalRead(6); //Onda triangular
+  S = digitalRead(7); //Onda senoidal
+
+  pot = analogRead(A1);
+
+  periodo = (float(pot) * 1950.0 / 4096.0)+ 50;
+  Serial.println(1000.0/periodo); // Frequencia em Hz
+  periodo = periodo * 1000; //passa o periodo para us
+  
+  if (Q == 0)
+  { //Onda quadrada
+    analogWrite(DAC1, DAC_MIN);
+    delayMicroseconds(periodo / 2);
+    analogWrite(DAC1, DAC_MAX);
+    delayMicroseconds(periodo / 2);
+  }
+
+  if (T == 0)
+  { //Onda triangular
+    _periodo = periodo / (DAC_MAX - DAC_MIN);
+  
+    for (int i = DAC_MIN; i <= DAC_MAX; i+=2)
+    {
+      analogWrite(DAC1, i);
+      delayMicroseconds(_periodo);
+    }
+
+    for (int i = DAC_MAX; i >= DAC_MIN; i-=2)
+    {
+      analogWrite(DAC1, i);
+      delayMicroseconds(_periodo);
+    }
+
+  }
+
+  if (S == 0)
+  { //Onda senoidal
+
+    _periodo = periodo / (360);
+
+    for (int i = 0; i <= 360; i++)
+    {
+      analogWrite(DAC1, seno[i]);
+      delayMicroseconds(_periodo);
+    }
+  }
+
+  else
+  {
+    analogWrite(DAC1, 0);
+  }
+} 
